@@ -1,0 +1,2 @@
+export DISCOURSE_DEV_DB=discourse_development
+export DISCOURSE_DEVELOPER_EMAILS=developer@example.com
