@@ -1,0 +1,5 @@
+chang stop rails
+chang_compose rm -fsv postgres
+chang_compose up -d postgres
+sleep 5 # wait for postgres to boot
+chang rails db:migrate

@@ -1488,7 +1488,7 @@ developer:
     default: ""
   port:
     hidden: true
-    default: ""
+    default: "<%= ENV['CHANG_REV_PROXY_PORT'] || '' %>"
   enable_long_polling:
     client: true
     default: true

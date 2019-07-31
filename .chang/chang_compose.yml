@@ -1,0 +1,40 @@
+environment:
+  - RUBY_VERSION=2.6.2
+  - RUBY_IMAGE=majkel/discourse-ruby:${RUBY_VERSION}
+  - POSTGRES_DB=${DISCOURSE_DEV_DB}
+  - POSTGRES_PASSWORD=123
+  - POSTGRES_USER=discourse
+  - POSTGRES_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres"
+
+services:
+  ruby:
+    user: app
+    image: ${RUBY_IMAGE}
+    volumes:
+      - chang:/app:nocopy
+      - ruby-bundle-cache_${RUBY_VERSION}:/home/app/bundle
+      - yarn-cache:/app/.cache/yarn
+      - yarn-node_modules-cache:/app/node_modules
+    working_dir: /app
+
+  rails:
+    extends: ruby
+    command: bash -c "rm -f tmp/pids/server.pid; bin/rails s -b 0.0.0.0"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+    - CHANG_HOST=${CHANG_APP_NAME}.localhost
+    - CHANG_REV_PROXY_PORT
+    - DISCOURSE_DEVELOPER_EMAILS
+    - RAILS_ENV=development
+    - DISCOURSE_DEV_DB
+
+  postgres:
+    image: postgres:9.5
+
+  redis:
+    image: redis:3.2-alpine
+
+server:
+  root: rails:3000
